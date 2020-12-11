@@ -8,6 +8,7 @@ from Oracle.Greedy_IC import generalGreedy
 from BanditAlg.CUCB import UCB1Algorithm as CUCB_Algorithm
 from BanditAlg.UCB import UCBAlgorithm
 from BanditAlg.DILinUCB import DILinUCBAlgorithm as DILinUCB_Algorithm
+from BanditAlg.IMFB import IMFBAlgorithm
 
 
 class SimulateOnlineData:
@@ -52,12 +53,12 @@ class SimulateOnlineData:
                 # print("rewards: " + str(reward))
 
                 self.AlgReward[alg_name].append(reward)
-                # self.averageReward[alg_name].append("%.2f" % np.mean(self.AlgReward[alg_name][0:iter_ + 1]))
+                self.averageReward[alg_name].append("%.2f" % np.mean(self.AlgReward[alg_name][0:iter_ + 1]))
 
             self.resultRecord(iter_)
 
-        # for alg_name in algorithms.keys():
-            # print(alg_name, "  average : ", self.averageReward[alg_name][-1])
+            for alg_name in algorithms.keys():
+                print(alg_name, "  average : ", self.averageReward[alg_name][-1])
 
     def resultRecord(self, iter_=None):
         # if initialize
@@ -80,7 +81,7 @@ class SimulateOnlineData:
 
 
 def MainForIC(G, indegree, probability, parameter, feature_dic, iterations, seed_size, dataset,
-              save_address_prefix, algorithm, real_mode=False, times = 10):
+              save_address_prefix, algorithm, real_mode=False, times=10):
     save_address = save_address_prefix + algorithm
     if not os.path.exists(save_address):
         os.makedirs(save_address)
@@ -88,16 +89,20 @@ def MainForIC(G, indegree, probability, parameter, feature_dic, iterations, seed
     for (u, v) in G.edges():
         G[u][v]['weight'] = 1
 
+    parameter = np.array(list(parameter.values()))[:, 0, :]
+
     x = 1
     while x <= times:
         algorithms = {}
-        experiments = SimulateOnlineData(G, probability, generalGreedy, seed_size, iterations, dataset, save_address, algorithm)
+        experiments = SimulateOnlineData(G, probability, generalGreedy, seed_size, iterations, dataset, save_address,
+                                         algorithm)
         if algorithm == 'UCB':
             algorithms[algorithm] = UCBAlgorithm(G, probability, seed_size)
         elif algorithm == 'CUCB':
             algorithms[algorithm] = CUCB_Algorithm(G, probability, seed_size, generalGreedy)
         elif algorithm[:2] == 'DI':
-            DILinUCB_parameter = np.array(list(parameter.values()))[:, 0, :]
-            algorithms[algorithm] = DILinUCB_Algorithm(G, DILinUCB_parameter, seed_size, generalGreedy, 0.1)
+            algorithms[algorithm] = DILinUCB_Algorithm(G, parameter, seed_size, generalGreedy, 0.1)
+        elif algorithm == 'IMFB':
+            algorithms[algorithm] = IMFBAlgorithm(G, probability, parameter, seed_size, generalGreedy)
         experiments.runAlgorithms(algorithms, real_mode)
         x += 1

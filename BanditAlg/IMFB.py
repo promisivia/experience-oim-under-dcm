@@ -1,5 +1,4 @@
 import numpy as np
-import networkx as nx
 import random
 
 
@@ -29,24 +28,22 @@ class MFUserStruct:
         self.beta_in = np.dot(self.CInv, self.d)
 
 
-class MFAlgorithm:
-    def __init__(self, G, P, parameter, seed_size, oracle, dimension, feedback='edge'):
+class IMFBAlgorithm:
+    def __init__(self, G, P, parameter, seed_size, oracle, feedback='edge'):
         self.G = G
         self.trueP = P
         self.parameter = parameter
         self.oracle = oracle
         self.seed_size = seed_size
         self.q = 0.25
-        self.plus = (1 + self.q) / (1 - self.q)
-        self.dimension = dimension
+        self.dimension = len(G.nodes())
         self.feedback = feedback
-        self.list_loss = []
-        self.currentP = nx.DiGraph()
+        self.currentP = {}
         self.users = {}  # Nodes
         for u in self.G.nodes():
-            self.users[u] = MFUserStruct(dimension, u)
+            self.users[u] = MFUserStruct(self.dimension, u)
             for v in self.G[u]:
-                self.currentP.add_edge(u, v, weight=random.random())
+                self.currentP[(u, v)] = random.random()
 
     def decide(self):
         S = self.oracle(self.G, self.seed_size, self.currentP)
@@ -61,18 +58,16 @@ class MFAlgorithm:
                     reward = 0
                 self.users[u].updateOut(self.users[v].beta_in, reward)
                 self.users[v].updateIn(self.users[u].theta_out, reward)
-                self.currentP[u][v]['weight'] = self.getP(self.users[u], self.users[v], it)
+                self.currentP[(u, v)] = self.getP(self.users[u], self.users[v], it)
 
     def getP(self, u, v, it):
         alpha_1 = 0.1
         alpha_2 = 0.1
-        CB = alpha_1 * np.dot(np.dot(v.beta_in, u.AInv), v.beta_in) + alpha_2 * np.dot(np.dot(u.theta_out, v.CInv), u.theta_out)
+        CB = alpha_1 * np.sqrt(np.dot(np.dot(u.beta_in, u.AInv), u.beta_in)) + alpha_2 * np.sqrt(
+            np.dot(np.dot(v.theta_out, v.CInv), v.theta_out))
         prob = np.dot(u.theta_out, v.beta_in) + CB + 2 * np.power(self.q, it)  # 4???
         if prob > 1:
             prob = 1
         if prob < 0:
             prob = 0
         return prob
-
-    def getLoss(self):
-        return np.asarray(self.list_loss)
