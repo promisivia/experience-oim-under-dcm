@@ -1,3 +1,6 @@
+# idea
+.idea/
+
 # data
 DataProcess/raw/
 DataProcess/processed/
