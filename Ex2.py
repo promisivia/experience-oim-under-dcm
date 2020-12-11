@@ -5,10 +5,10 @@ from RunTools.MainForIC import MainForIC
 from RunTools.MainForDCUCB import MainForDCUCB, MainForDCLinUCB
 
 # data
-seed_size = 4
+seed_size = 5
 iterations = 10000
-dataset_list = ['Flickr', 'HetHEPT']
-prob_list = [0.2, 0.5, 0.8]
+dataset_list = ['NetHEPT']  # dataset_list = ['Flickr', 'HetHEPT']
+prob_list = [0.2]  # prob_list = [0.2, 0.5, 0.8]
 
 if __name__ == '__main__':
     for dataset in dataset_list:
@@ -21,9 +21,8 @@ if __name__ == '__main__':
             P_DC = pickle.load(open('datasets/SameP/' + dataset + '/' + str(prob) + 'DC_Probability.dic', 'rb'), encoding='latin1')
             parameter = pickle.load(open('datasets/SameP/' + dataset + '/nodeFeatures.dic', 'rb'), encoding='latin1')
 
-            MainForIC(G, indegree, P, parameter, None, iterations, seed_size, dataset, save_address, algorithm='DILinUCB-IC')
-            MainForIC(G, indegree, P, None, None, iterations, seed_size, dataset, save_address, algorithm='CUCB')
-
             MainForCMAB(G, indegree, P_DC, None, None, iterations, seed_size, dataset, save_address)
+            MainForIC(G, indegree, P, parameter, None, iterations, seed_size, dataset, save_address, algorithm='DILinUCB-IC')
             MainForDC(G, indegree, P_DC, parameter, None, iterations, seed_size, dataset, save_address, algorithm='DILinUCB-DC')
-            # MainForDCUCB(G, indegree, P_DC, None, None, iterations, seed_size, dataset, save_address, 0.1, times=5)
+            MainForIC(G, indegree, P, None, None, iterations, seed_size, dataset, save_address, algorithm='CUCB', times=1)
+            MainForDCUCB(G, indegree, P_DC, None, None, iterations, seed_size, dataset, save_address, 0.1, times=1)

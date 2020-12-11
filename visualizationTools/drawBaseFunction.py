@@ -103,7 +103,7 @@ def draw_Reward(fileFolderPath, alg_list, count, y_start=-1, y_end=-1, drawType=
     else:
         file_name = file_name + ".pdf"
 
-    save_address = 'SimulationResults/result/'
+    save_address = '../SimulationResults/result/'
     isExist = os.path.exists(save_address)
     if not isExist:
         os.makedirs(save_address)
