@@ -1,7 +1,7 @@
 import os
 import numpy as np
 
-from Model.Real import runReal_IC
+from Model.Real import runReal_IC, runReal_DILinUCB
 from Model.IC import runIC, runIC_DILinUCB
 from Tool.utilFunc import *
 from Oracle.Greedy_IC import generalGreedy
@@ -43,7 +43,10 @@ class SimulateOnlineData:
                 S = algorithm.decide()
                 # print('choose set:', S)
                 if real_mode:
-                    reward, live_edges, live_nodes = runReal_IC(self.G, S)
+                    if alg_name[0:2] == 'DI':
+                        reward, live_edges, live_nodes = runReal_DILinUCB(self.G, S)
+                    else:
+                        reward, live_edges, live_nodes = runReal_IC(self.G, S)
                 else:
                     if alg_name[0:2] == 'DI':
                         reward, live_edges, live_nodes = runIC_DILinUCB(self.G, self.TrueP, S)
