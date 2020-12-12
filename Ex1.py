@@ -19,7 +19,7 @@ if __name__ == '__main__':
             parameter = pickle.load(open('datasets/' + dataset + '/nodeFeatures.dic', 'rb'), encoding='latin1')
             feature_dic = pickle.load(open('datasets/' + dataset + '/edgeFeatures.dic', 'rb'), encoding='latin1')
 
-            # MainForDC(G, indegree, P, parameter, feature_dic, iterations, seed_size, dataset, save_address, algorithm='UCB', times=20)
-            # MainForCMAB(G, indegree, P, parameter, feature_dic, iterations, seed_size, dataset, save_address, times=20)
-            # MainForDC(G, indegree, P, parameter, feature_dic, iterations, seed_size, dataset, save_address, algorithm='DILinUCB-DC', times=20)
-            MainForDCUCB(G, indegree, P, parameter, feature_dic, iterations, seed_size, dataset, save_address, 0.1, times=20)
+            MainForDC(G, indegree, P, parameter, feature_dic, iterations, seed_size, dataset, save_address, algorithm='UCB', times=5)
+            MainForCMAB(G, indegree, P, parameter, feature_dic, iterations, seed_size, dataset, save_address, times=5)
+            MainForDC(G, indegree, P, parameter, feature_dic, iterations, seed_size, dataset, save_address, algorithm='DILinUCB-DC', times=5)
+            MainForDCUCB(G, indegree, P, parameter, feature_dic, iterations, seed_size, dataset, save_address, 0.1, times=5)
