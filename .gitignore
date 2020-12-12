@@ -1,3 +1,12 @@
+# idea
+.idea/
+
+# data
+DataProcess/raw/
+DataProcess/processed/
+SimulationResults/
+datasets/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
