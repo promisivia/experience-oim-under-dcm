@@ -41,7 +41,6 @@ class UCB1Algorithm:
         for (u, v) in self.G.edges():
             self.arms[(u, v)] = UCB1Struct((u, v))
             self.currentP[(u, v)] = 0
-        self.list_loss = []
         self.TotalPlayCounter = 0
 
     def decide(self):
@@ -50,22 +49,11 @@ class UCB1Algorithm:
         return S
 
     def updateParameters(self, S, live_nodes, live_edges, iter_, update=True):
-        # count = 0
-        loss_p = 0
         for u in live_nodes:
             for (u, v) in self.G.edges(u):
                 if (u, v) in live_edges:
                     self.arms[(u, v)].updateParameters(reward=live_edges[(u, v)])
-
                 self.currentP[(u, v)] = self.arms[(u, v)].getProb(self.TotalPlayCounter)
-                estimateP = self.currentP[(u, v)]
-                trueP = self.trueP[(u, v)]
-                loss_p += np.abs(estimateP - trueP)
-                # count += 1
-        self.list_loss.append(loss_p)
-
-    def getLoss(self):
-        return np.asarray(self.list_loss)
 
     def getP(self):
         return self.currentP
