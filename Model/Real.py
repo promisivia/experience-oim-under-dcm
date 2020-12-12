@@ -1,7 +1,10 @@
 from copy import deepcopy
 from random import choice
 import pickle
+import networkx as nx
 
+TOTAL_DAY = 1000
+INTERVAL = 90
 file_address = "DataProcess/processed/"
 user_time_set = pickle.load(open(file_address + "userTimeSet.dic", 'rb'))
 user_time_to_movie = pickle.load(open(file_address + "userAndTimeToMovie.dic", 'rb'))
@@ -9,11 +12,11 @@ user_first_day = {}
 
 
 def movieToSetId(movie):
-    return movie % 10
+    return movie % 20
 
 
 def get_movie_id(user, day):
-    movie = user_time_to_movie.get((user, str(day)))
+    movie = user_time_to_movie.get((user, day))
     if movie is None:
         return None
     else:
@@ -26,7 +29,7 @@ def runReal_IC(G, S):
 
     # randomly choose a day that user v has see a movie
     for v in S:
-        time = int(choice(list(user_time_set[str(v)])))
+        time = int(choice(list(user_time_set[v])))
         user_first_day[v] = time
 
     # for every seed in seed set
@@ -40,8 +43,8 @@ def runReal_IC(G, S):
         for nei in G[user]:
             if nei not in T:
                 # see what v influence in 100 days from the day it is added to the set
-                for day in range(first_day, first_day + 101):
-                    day = day % (365 + 365 + 366)
+                for day in range(first_day, first_day + INTERVAL + 1):
+                    day = day % TOTAL_DAY
                     nei_movie_id = get_movie_id(nei, day)
                     if nei_movie_id is not None:
                         if nei_movie_id == user_movie_id:
@@ -50,6 +53,9 @@ def runReal_IC(G, S):
                             user_first_day[nei] = day
                         else:
                             E[(user, nei)] = 0
+            else:  # for ic full, should also influence but there is not effect
+                E[(user, nei)] = 0
+
         i += 1
 
     reward = len(T)
@@ -65,7 +71,7 @@ def runReal_DC(G, S):
         T_node[v] = 0
 
     for v in S:
-        time = int(choice(list(user_time_set[str(v)])))
+        time = int(choice(list(user_time_set[v])))
         user_first_day[v] = time
 
     # for every seed in seed set
@@ -79,8 +85,8 @@ def runReal_DC(G, S):
         for nei in G[user]:
             if nei not in T:
                 # see what v influence in 100 days from the day it is added to the set
-                for day in range(first_day, first_day + 101):
-                    day = day % (365 + 365 + 366)
+                for day in range(first_day, first_day + INTERVAL + 1):
+                    day = day % INTERVAL
                     nei_movie_id = get_movie_id(nei, day)
                     if nei_movie_id is not None:
                         if nei_movie_id == user_movie_id:

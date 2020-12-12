@@ -2,84 +2,111 @@ import networkx as nx
 import pickle
 import matplotlib.pyplot as plt
 
-action_logs = []
-user_set = set()
-user_action_count = pickle.load(open("./processed/userActionCount.dic", 'rb'))
+# const data
+graph_address = './raw/link.txt'
+action_log_address = "./processed/action_logs.txt"
+save_dir = '../datasets/Flixster/'
 
-# part1: read the action log
-fin_rating = open("./processed/action_logs.txt", encoding="utf8", errors='ignore')
+ID_COUNT = 20
+INTERVAL = 365
+TOTAL_DAY = 1000
+
+
+def movieToSetId(movie):
+    return movie % ID_COUNT
+
+
+def have_activation(set1, set2):
+    count = 0
+    for t1 in set1:
+        for t2 in set2:
+            t1 = int(t1)
+            t2 = int(t2)
+            if t1 - t2 <= INTERVAL or t2 - t1 <= INTERVAL:
+                count += 1
+            if t1 < INTERVAL and t1 + TOTAL_DAY - t2 <= INTERVAL:
+                count += 1
+            if t2 < INTERVAL and t2 + TOTAL_DAY - t1 <= INTERVAL:
+                count += 1
+    return count
+
+
+# prepare movie set and user to time:
+user_movie_id_set = {}
+user_movie_time = {}
+
+fin_rating = open(action_log_address, encoding="utf8", errors='ignore')
 line = fin_rating.readline()  # skip the first line
 for line in fin_rating:
     arr = line.split()
     user = int(arr[0])
-    movie = int(arr[1])
+    movie_set_id = movieToSetId(int(arr[1]))
+    time = int(arr[2])
 
-    if movie == 54053:
-        user_set.add(user)
+    try:
+        user_movie_id_set[user].add(movie_set_id)
+    except:
+        user_movie_id_set[user] = set()
+        user_movie_id_set[user].add(movie_set_id)
+
+    try:
+        user_movie_time[(user, movie_set_id)].add(time)
+    except:
+        user_movie_time[(user, movie_set_id)] = set()
+        user_movie_time[(user, movie_set_id)].add(time)
 
 fin_rating.close()
-print("Number of users: ", len(user_set))
+print("Finish finding the movie set and user to time")
 
-# part2: read the graph
-#
-# degree = {}
-# node_list = []
-#
-# f_graph = open('./raw/link.txt', encoding="utf8", errors='ignore')
-# for line in f_graph:
-#     data = line.split()
-#     u = int(data[0])
-#     v = int(data[1])
-#     try:
-#         degree[v] += 1
-#     except:
-#         degree[v] = 1
-#     try:
-#         degree[u] += 1
-#     except:
-#         degree[u] = 1
-# f_graph.close()
-#
-# for key in user_set:
-#     if 20 <= degree[key]:
-#         node_list.append(key)
-#
-# print('node list length: ', len(node_list))
 
+# find graph with edge active
 G = nx.Graph()
-f_graph = open('./raw/link.txt', encoding="utf8", errors='ignore')
-for line in f_graph:
-    data = line.split()
-    u = int(data[0])
-    v = int(data[1])
-    if u in user_set and v in user_set:
-        G.add_edge(u, v)
+with open(graph_address) as f:
+    for line in f:
+        data = line.split()
+        u = int(data[0])
+        v = int(data[1])
 
-f_graph.close()
+        try:
+            u_set = user_movie_id_set[u]
+            v_set = user_movie_id_set[v]
+        except:
+            continue
 
+        for movie_id in u_set & v_set:
+            u_time_set = user_movie_time[(u, movie_id)]
+            v_time_set = user_movie_time[(v, movie_id)]
+
+            if have_activation(u_time_set, v_time_set) > 5:
+                G.add_edge(u, v)
+
+f.close()
 print("G size : ", len(G.nodes()), len(G.edges()))
 
-# nx.draw(G)
-# plt.show()
-# pickle.dump(G, open(save_dir + 'graph_max_component.G', "wb"))
 
-
-# part3: find the max connected component
-print("start finding max component...")
-save_dir = "./processed/"
-
+# find max component
 component = max(nx.connected_components(G), key=len)
 Gc = G.subgraph(component).copy()
-print("the max component Gc size : ", len(Gc.nodes()), len(Gc.edges()))
+nodes = Gc.nodes()
 
-# nx.draw(Gc)
-# plt.show()
+G = nx.DiGraph()
+with open(graph_address) as f:
+    for line in f:
+        data = line.split()
+        u = int(data[0])
+        v = int(data[1])
+        if u in nodes and v in nodes:
+            G.add_edge(u, v)
+            G.add_edge(v, u)
+f.close()
 
-pickle.dump(Gc, open(save_dir + 'graph_max_component.G', "wb"))
+print("Finish finding the max component")
+print("max component size : ", len(G.nodes()), len(G.edges()))
+nx.draw(G)
+plt.show()
+pickle.dump(G, open(save_dir + 'graph.G', "wb"))
 
 #######################################
 # @output:
-# Number of users: 2252
-# G size: 23917 24870
-# the max component Gc size: 21433 23162
+# max component size :  359 986
 ########################################
