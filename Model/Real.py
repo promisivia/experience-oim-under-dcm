@@ -131,7 +131,7 @@ def runReal_DC(G, S):
             if nei not in T:
                 # see what v influence in 100 days from the day it is added to the set
                 for day in range(first_day, first_day + INTERVAL + 1):
-                    day = day % INTERVAL
+                    day = day % TOTAL_DAY
                     nei_movie_id = get_movie_id(nei, day)
                     if nei_movie_id is not None:
                         if nei_movie_id == user_movie_id:
