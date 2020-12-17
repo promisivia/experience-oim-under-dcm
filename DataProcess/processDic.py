@@ -1,7 +1,6 @@
 import pickle
 
-file_address = './raw/link.txt'
-action_log_address = "./processed/action_logs.txt"
+action_log_address = "./processed/fm_action_logs.txt"
 
 user_to_movie_set = {}  # the movie set the user see
 user_to_action_count = {}  # the action count
@@ -32,7 +31,7 @@ for line in action_logs:
 
 action_logs.close()
 
-pickle.dump(user_to_action_count, open('./processed/userActionCount.dic', "wb"))
-pickle.dump(user_to_movie_set, open('./processed/userMovieSet.dic', "wb"))
-pickle.dump(user_time_set, open('./processed/userTimeSet.dic', "wb"))
-pickle.dump(user_and_time_to_movie, open('./processed/userAndTimeToMovie.dic', "wb"))
+pickle.dump(user_to_action_count, open('../datasets/LastFM/userActionCount.dic', "wb"))
+pickle.dump(user_to_movie_set, open('../datasets/LastFM/userMovieSet.dic', "wb"))
+pickle.dump(user_time_set, open('../datasets/LastFM/userTimeSet.dic', "wb"))
+pickle.dump(user_and_time_to_movie, open('../datasets/LastFM/userAndTimeToMovie.dic', "wb"))

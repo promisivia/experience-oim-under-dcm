@@ -3,9 +3,9 @@ from random import choice
 import pickle
 import networkx as nx
 
-TOTAL_DAY = 1000
+TOTAL_DAY = 365 * 6 + 1
 INTERVAL = 90
-file_address = "DataProcess/processed/"
+file_address = "datasets/LastFM/"
 user_time_set = pickle.load(open(file_address + "userTimeSet.dic", 'rb'))
 user_time_to_movie = pickle.load(open(file_address + "userAndTimeToMovie.dic", 'rb'))
 user_first_day = {}
