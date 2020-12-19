@@ -10,10 +10,10 @@ for line in fin_rating:
         user = int(arr[0])
         movie = int(arr[1])
         movie_set.add(movie)
-        timeArray = time.strptime(arr[3]+' '+arr[3]+' '+arr[5], "%d %m %Y")
+        timeArray = time.strptime(arr[3]+' '+arr[4]+' '+arr[5], "%d %m %Y")
         # replace with time stamp
         day = timeArray.tm_yday
-        if 2006 <= timeArray.tm_year <= 2001:
+        if 2006 <= timeArray.tm_year <= 2009:
             day += 365 * (timeArray.tm_year - 2006)
             if timeArray.tm_year > 2008:
                 day += 1
@@ -35,5 +35,7 @@ with open("processed/fm_action_logs.txt", "w") as fout_action:
 # @output
 # Number of logs:  183991
 # Number of action ids:  12523
+# Max day:  1955
+# Min day:  1
 # Sorting action_logs...
 ############################################
