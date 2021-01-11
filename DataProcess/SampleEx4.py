@@ -7,9 +7,9 @@ graph_address = './raw/link.txt'
 action_log_address = "./processed/action_logs.txt"
 save_dir = '../datasets/Flixster/'
 
-ID_COUNT = 20
+ID_COUNT = 50
 INTERVAL = 365
-TOTAL_DAY = 1000
+TOTAL_DAY = 1052  # 1052@Flixster 1955@LastFM
 
 
 def movieToSetId(movie):
@@ -58,7 +58,6 @@ for line in fin_rating:
 fin_rating.close()
 print("Finish finding the movie set and user to time")
 
-
 # find graph with edge active
 G = nx.Graph()
 with open(graph_address) as f:
@@ -77,12 +76,11 @@ with open(graph_address) as f:
             u_time_set = user_movie_time[(u, movie_id)]
             v_time_set = user_movie_time[(v, movie_id)]
 
-            if have_activation(u_time_set, v_time_set) > 5:
+            if have_activation(u_time_set, v_time_set) > 25:
                 G.add_edge(u, v)
 
 f.close()
 print("G size : ", len(G.nodes()), len(G.edges()))
-
 
 # find max component
 component = max(nx.connected_components(G), key=len)
@@ -107,6 +105,8 @@ plt.show()
 pickle.dump(G, open(save_dir + 'graph.G', "wb"))
 
 #######################################
-# @output:
-# max component size :  359 986
+# Finish finding the movie set and user to time
+# G size :  1362 1026
+# Finish finding the max component
+# max component size :  259 678
 ########################################
