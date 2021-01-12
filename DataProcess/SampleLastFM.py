@@ -7,9 +7,9 @@ graph_address = './raw/user_friends.dat'
 action_log_address = "./processed/fm_action_logs.txt"
 save_dir = '../datasets/LastFM/'
 
-ID_COUNT = 20
+ID_COUNT = 50
 INTERVAL = 365
-TOTAL_DAY = 365 * 6 + 1
+TOTAL_DAY = 1955
 
 
 def movieToSetId(movie):
@@ -78,7 +78,7 @@ with open(graph_address) as f:
             u_time_set = user_movie_time[(u, movie_id)]
             v_time_set = user_movie_time[(v, movie_id)]
 
-            if have_activation(u_time_set, v_time_set) > 5:
+            if have_activation(u_time_set, v_time_set) > 25:
                 G.add_edge(u, v)
 
 f.close()
@@ -109,6 +109,8 @@ plt.show()
 pickle.dump(G, open(save_dir + 'graph.G', "wb"))
 
 #######################################
-# @output:
-# max component size :  359 986
+# Finish finding the movie set and user to time
+# G size :  310 418
+# Finish finding the max component
+# max component size :  298 2710
 ########################################

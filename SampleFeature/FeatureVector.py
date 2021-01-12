@@ -9,7 +9,7 @@ dimension = 5
 p_prob = 0.1
 fv_prob = 0.1
 scale = 5
-dataset = 'Flickr'
+dataset = 'Small2'
 kind = 'random'
 
 p = np.array([np.random.normal(0, 0.5, 1)[0] for i in range(dimension - 1)])  # 一个全局的p*

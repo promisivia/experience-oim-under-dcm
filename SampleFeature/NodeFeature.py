@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import pickle
 
-save_dir = '../datasets/Flixster/'
+save_dir = '../datasets/Flixster-v3/'
 
 dimension = 5
 nodeDic = {}

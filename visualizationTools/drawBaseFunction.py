@@ -15,9 +15,9 @@ def array2CumulativeArray(rawArray):
 
 
 def array2AverageArray(rawArray):
-    tmpRes = np.arange(len(rawArray))
+    tmpRes = np.arange(len(rawArray), dtype =  float)
     for i in range(len(rawArray)):
-        tmpRes[i] = np.sum(rawArray[:(i + 1)]) / (i + 1)
+        tmpRes[i] = np.sum(rawArray[:(i + 1)]) / float(i + 1.0)
     return tmpRes
 
 
@@ -71,8 +71,8 @@ def draw_Reward(fileFolderPath, alg_list, count, y_start=-1, y_end=-1, drawType=
         data_Array_Average, data_Array_STE, timeStamp, sqrtNSequence = getDataOfOneAlg(
             path, algor, count=count, drawType=drawType)
 
-        y_smooth = signal.savgol_filter(data_Array_Average, 501, 3)
-
+        # y_smooth = signal.savgol_filter(data_Array_Average, 11, 3)
+        y_smooth = data_Array_Average
         print("algo:", path_tail, "average is", data_Array_Average[-1])
 
         # y_smooth = data_Array_Average
@@ -89,7 +89,7 @@ def draw_Reward(fileFolderPath, alg_list, count, y_start=-1, y_end=-1, drawType=
     plt.title(subTitile, fontsize=16)
     plt.tick_params(labelsize=12)
     # plt.text(0, 0, subTitile, fontsize=15, verticalalignment="top", horizontalalignment="right")
-    plt.legend(loc='upper right', fontsize=13)
+    plt.legend(loc='lower right', fontsize=13)
     plt.xlabel('Iteration', fontsize=13)
     plt.ylabel(drawType + "d " + 'Reward', fontsize=13)
     # plt.title(fileFolderPath[25:len(fileFolderPath) - 1] + "_" + drawType + "_count=" + str(count))

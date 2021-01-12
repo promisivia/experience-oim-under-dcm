@@ -1,17 +1,14 @@
 import pickle
 
-file_address = '../datasets/Flixster/'
+file_address = '../datasets/SameP/Flickr/'
 graph = pickle.load(open(file_address + 'graph.G', 'rb'), encoding='latin1')
 
 indegree = {}
+for n in graph.nodes():
+    indegree[n] = 0
+
 for (u, v) in graph.edges():
-    try:
-        indegree[u] += 1
-    except:
-        indegree[u] = 1
-    try:
-        indegree[v] += 1
-    except:
-        indegree[v] = 1
+    indegree[v] += 1
+    # indegree[u] += 1
 
 pickle.dump(indegree, open(file_address + 'indegree.dic', "wb"))

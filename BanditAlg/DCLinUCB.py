@@ -61,7 +61,7 @@ class DCLinUCBAlgorithm:
                 self.indegree[n] = 0
 
     def select_seed(self):
-        S = self.oracle(self.G, self.currentP, self.seed_size, 50)
+        S = self.oracle(self.G, self.currentP, self.seed_size, 20)
         # print("---------------the selected seed set is :", S)
 
         return S

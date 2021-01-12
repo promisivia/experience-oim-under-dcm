@@ -6,8 +6,8 @@ from RunTools.MainForDCUCB import MainForDCUCB
 # data
 seed_size = 5
 iterations = 10000
-dataset = 'Flixster'
-save_address = 'SimulationResults/Ex4/Flixster/'
+dataset = 'Flixster-v3'
+save_address = 'SimulationResults/Ex4/version3/'
 
 if __name__ == '__main__':
     G = pickle.load(open('datasets/' + dataset + '/graph.G', 'rb'), encoding='latin1')
@@ -16,6 +16,5 @@ if __name__ == '__main__':
 
     # MainForCMAB(G, indegree, None, parameter, None, iterations, seed_size, dataset, save_address, real_mode=True)
     # MainForIC(G, indegree, None, parameter, None, iterations, seed_size, dataset, save_address, algorithm='CUCB', real_mode=True, times=1)
-    # MainForIC(G, indegree, None, parameter, None, iterations, seed_size, dataset, save_address, algorithm='DILinUCB-IC', real_mode=True, times=1)
+    MainForIC(G, indegree, None, parameter, None, iterations, seed_size, dataset, save_address, algorithm='DILinUCB-IC', real_mode=True, times=1)
     # MainForDCUCB(G, indegree, None, parameter, None, iterations, seed_size, dataset, save_address, 0.1, times=1, real_mode=True)
-    MainForIC(G, indegree, None, parameter, None, iterations, seed_size, dataset, save_address, algorithm='IMFB', times=2)

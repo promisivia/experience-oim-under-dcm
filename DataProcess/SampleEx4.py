@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 # const data
 graph_address = './raw/link.txt'
 action_log_address = "./processed/action_logs.txt"
-save_dir = '../datasets/Flixster/'
+save_dir = '../datasets/Flixster-v3/'
 
 ID_COUNT = 20
 INTERVAL = 365
@@ -74,27 +74,30 @@ with open(graph_address) as f:
         except:
             continue
 
-        for movie_id in u_set & v_set:
+        try:
+            degree[u] += 1
+        except:
+            degree[u] = 1
+        try:
+            degree[v] += 1
+        except:
+            degree[v] = 1
+
+        set = u_set & v_set
+        for movie_id in set:
             u_time_set = user_movie_time[(u, movie_id)]
             v_time_set = user_movie_time[(v, movie_id)]
 
-            if have_activation(u_time_set, v_time_set) > 15:
+            if have_activation(u_time_set, v_time_set) >20:
                 G.add_edge(u, v)
-                try:
-                    degree[u] += 1
-                except:
-                    degree[u] = 1
-                try:
-                    degree[v] += 1
-                except:
-                    degree[v] = 1
+                continue
 
 f.close()
 print("G size : ", len(G.nodes()), len(G.edges()))
 
 newG = nx.Graph()
 for (u, v) in G.edges():
-    if degree[u] > 20 and degree[v] > 20:
+    if degree[u] > 25 and degree[v] > 25:
         newG.add_edge(u, v)
 print("newG size : ", len(newG.nodes()), len(newG.edges()))
 

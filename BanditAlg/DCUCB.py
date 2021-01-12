@@ -84,4 +84,4 @@ class DC_UCB_alg:
                     self.currentP[(n, i + 1)] = min(self.edge_bases[(n, i + 1)].get_upper_estimation(self.all_rounds),
                                                     self.currentP[(n, i)])
 
-        # print("---------------current P ", self.currentP)
+        print("---------------current P ", self.currentP)
