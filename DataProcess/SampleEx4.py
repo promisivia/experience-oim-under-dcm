@@ -88,7 +88,7 @@ with open(graph_address) as f:
             u_time_set = user_movie_time[(u, movie_id)]
             v_time_set = user_movie_time[(v, movie_id)]
 
-            if have_activation(u_time_set, v_time_set) >20:
+            if have_activation(u_time_set, v_time_set) > 30:
                 G.add_edge(u, v)
                 continue
 
@@ -97,7 +97,7 @@ print("G size : ", len(G.nodes()), len(G.edges()))
 
 newG = nx.Graph()
 for (u, v) in G.edges():
-    if degree[u] > 25 and degree[v] > 25:
+    if degree[u] > 20 and degree[v] > 20:
         newG.add_edge(u, v)
 print("newG size : ", len(newG.nodes()), len(newG.edges()))
 
