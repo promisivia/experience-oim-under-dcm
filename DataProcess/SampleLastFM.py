@@ -5,9 +5,9 @@ import matplotlib.pyplot as plt
 # const data
 graph_address = './raw/user_friends.dat'
 action_log_address = "./processed/fm_action_logs.txt"
-save_dir = '../datasets/LastFM/'
+save_dir = '../datasets/LastFM-v4/'
 
-ID_COUNT = 50
+ID_COUNT = 20
 INTERVAL = 365
 TOTAL_DAY = 1955
 
@@ -61,6 +61,7 @@ print("Finish finding the movie set and user to time")
 
 # find graph with edge active
 G = nx.Graph()
+degree = {}
 with open(graph_address) as f:
     line = f.readline()  # skip the first line
     for line in f:
@@ -74,23 +75,41 @@ with open(graph_address) as f:
         except:
             continue
 
-        for movie_id in u_set & v_set:
+        try:
+            degree[u] += 1
+        except:
+            degree[u] = 1
+        try:
+            degree[v] += 1
+        except:
+            degree[v] = 1
+
+        for movie_id in (u_set & v_set):
             u_time_set = user_movie_time[(u, movie_id)]
             v_time_set = user_movie_time[(v, movie_id)]
 
-            if have_activation(u_time_set, v_time_set) > 25:
+            if have_activation(u_time_set, v_time_set) > 20:
                 G.add_edge(u, v)
 
 f.close()
 print("G size : ", len(G.nodes()), len(G.edges()))
 
 
+newG = nx.Graph()
+for (u, v) in G.edges():
+    if 100 > degree[u] > 20 and 100 > degree[v] > 20:
+        newG.add_edge(u, v)
+print("newG size : ", len(newG.nodes()), len(newG.edges()))
+
+
 # find max component
-component = max(nx.connected_components(G), key=len)
-Gc = G.subgraph(component).copy()
+component = max(nx.connected_components(newG), key=len)
+Gc = newG.subgraph(component).copy()
+print("max component size : ", len(Gc.nodes()), len(Gc.edges()))
+
 nodes = Gc.nodes()
 
-G = nx.DiGraph()
+finalG = nx.DiGraph()
 with open(graph_address) as f:
     line = f.readline()  # skip the first line
     for line in f:
@@ -98,19 +117,23 @@ with open(graph_address) as f:
         u = int(data[0])
         v = int(data[1])
         if u in nodes and v in nodes:
-            G.add_edge(u, v)
-            G.add_edge(v, u)
+            finalG.add_edge(u, v)
+            finalG.add_edge(v, u)
+
 f.close()
 
 print("Finish finding the max component")
-print("max component size : ", len(G.nodes()), len(G.edges()))
-nx.draw(G)
+print("final size : ", len(finalG.nodes()), len(finalG.edges()))
+nx.draw(finalG)
 plt.show()
-pickle.dump(G, open(save_dir + 'graph.G', "wb"))
+pickle.dump(finalG, open(save_dir + 'graph.G', "wb"))
+print("Finish dumping the graph")
 
 #######################################
 # Finish finding the movie set and user to time
-# G size :  310 418
+# G size :  607 1127
+# newG size :  193 256
+# max component size :  183 250
 # Finish finding the max component
-# max component size :  298 2710
+# final size :  183 1008
 ########################################

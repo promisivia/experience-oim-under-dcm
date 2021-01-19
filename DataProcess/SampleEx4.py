@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 # const data
 graph_address = './raw/link.txt'
 action_log_address = "./processed/action_logs.txt"
-save_dir = '../datasets/Flixster-v3/'
+save_dir = '../datasets/Flixster-v4/'
 
 ID_COUNT = 20
 INTERVAL = 365
@@ -88,7 +88,7 @@ with open(graph_address) as f:
             u_time_set = user_movie_time[(u, movie_id)]
             v_time_set = user_movie_time[(v, movie_id)]
 
-            if have_activation(u_time_set, v_time_set) > 30:
+            if have_activation(u_time_set, v_time_set) > 20:
                 G.add_edge(u, v)
                 continue
 
@@ -117,6 +117,7 @@ with open(graph_address) as f:
         v = int(data[1])
         if u in nodes and v in nodes:
             finalG.add_edge(u, v)
+            finalG.add_edge(v, u)
 
 f.close()
 
@@ -127,8 +128,9 @@ plt.show()
 pickle.dump(finalG, open(save_dir + 'graph.G', "wb"))
 
 #######################################
-# Finish finding the movie set and user to time
-# G size :  1362 1026
+# G size :  4194 3605
+# newG size :  404 370
+# max component size :  204 210
 # Finish finding the max component
-# max component size :  259 678
+# final size :  204 938
 ########################################
