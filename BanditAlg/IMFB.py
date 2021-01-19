@@ -30,14 +30,14 @@ class MFUserStruct:
 
 
 class IMFBAlgorithm:
-    def __init__(self, G, P, parameter, seed_size, oracle, feedback='edge'):
+    def __init__(self, G, P, parameter, seed_size, dim, oracle, feedback='edge'):
         self.G = G
         self.trueP = P
         self.parameter = parameter
         self.oracle = oracle
         self.seed_size = seed_size
         self.q = 0.25
-        self.dimension = len(G.nodes())
+        self.dimension = dim
         self.feedback = feedback
         self.list_loss = []
         self.currentP = {}

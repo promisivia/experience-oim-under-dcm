@@ -49,7 +49,7 @@ class DC_UCB_alg:
                 continue
 
     def select_seed(self):
-        S = self.oracle(self.G, self.currentP, self.seed_size, 50)
+        S = self.oracle(self.G, self.currentP, self.seed_size, 30)
         # print("---------------the selected seed set is :", S)
 
         return S
@@ -84,4 +84,4 @@ class DC_UCB_alg:
                     self.currentP[(n, i + 1)] = min(self.edge_bases[(n, i + 1)].get_upper_estimation(self.all_rounds),
                                                     self.currentP[(n, i)])
 
-        print("---------------current P ", self.currentP)
+        # print("---------------current P ", self.currentP)
