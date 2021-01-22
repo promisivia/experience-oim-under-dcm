@@ -29,9 +29,9 @@ class simulation:
         for i in range(self.iterations):
 
             for alg_name, alg in list(algorithms.items()):
-                print("----------the ", i + 1, "  round---------")
+                # print("----------the ", i + 1, "  round---------")
                 S = alg.select_seed()
-                print('choose set:', S)
+                # print('choose set:', S)
                 if not real_mode:
                     observed_probabilities, reward = alg.simulate(S)
                 else:
@@ -40,11 +40,11 @@ class simulation:
                 self.AlgReward[alg_name].append(reward)
                 self.averageReward[alg_name].append("%.2f" % np.mean(self.AlgReward[alg_name][0:i + 1]))
 
-                print("rewards: " + str(reward))
+                # print("rewards: " + str(reward))
             self.resultRecord(i)
 
-            for alg_name in algorithms.keys():
-                print("average : ", self.averageReward[alg_name][-1])
+            # for alg_name in algorithms.keys():
+                # print("average : ", self.averageReward[alg_name][-1])
 
     def resultRecord(self, iter_=None):
         # if initialize

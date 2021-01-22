@@ -66,7 +66,6 @@ class DC_UCB_alg:
 
     def update(self, observed_probabilities):
         # print("update observations", observed_probabilities)
-        # 更新观察到的每个edge_base
         for key, val in zip(observed_probabilities.keys(), observed_probabilities.values()):
             node = key[0]
             index = key[1]

@@ -4,7 +4,6 @@ import networkx as nx
 import numpy as np
 
 
-# 跑 SameP 模型，返回根据 seed set生成的 observed set 和 被激活的节点数
 def runDC(G, P, S):
     """
     Input: G -- networkx graph object
@@ -12,7 +11,6 @@ def runDC(G, P, S):
     p -- propagation probability
     Output: T -- resulted influenced set of vertices (including S)
     """
-    # 记录与每个 T 相关的尝试激活它的节点个数
     T_node = {}
 
     for v in G.nodes():
@@ -25,9 +23,8 @@ def runDC(G, P, S):
     while i < len(T):
         for v in G[T[i]]:
             if v not in T:  # if it wasn't selected yet
-                # T[i]尝试去激活节点 v
+                # T[i] attempts to activate node v
                 weight = P[(v, T_node[v])]
-                # 激活成功
                 if random() <= weight:
                     T.append(v)
                     E[(v, T_node[v])] = 1
@@ -36,8 +33,6 @@ def runDC(G, P, S):
                 T_node[v] += 1
         i += 1
     reward = len(T)
-    # T 最后被激活的节点
-    # len(T) 最后被激活的节点个数
     return reward, E, T
 
 
@@ -48,10 +43,10 @@ def runDC_DILinUCB(G, P, S):
     p -- propagation probability
     Output: T -- resulted influenced set of vertices (including S)
     """
-    T_node = {}  # 记录与每个 T 相关的尝试激活它的节点个数
+    T_node = {}  # record count of node try to active node v
     T = deepcopy(S)  # copy already selected nodes
     E = {}
-    Active = nx.Graph()  # 如果一条边被激活了，就存在G中
+    Active = nx.Graph()
 
     for v in G.nodes():
         T_node[v] = 0
@@ -60,10 +55,9 @@ def runDC_DILinUCB(G, P, S):
     i = 0
     while i < len(T):
         for v in G[T[i]]:
-            if v not in T:  # 对所有不在T中的 T[i]的邻居v
-                # T[i]尝试去激活节点 v
+            if v not in T:
+                # T[i] attempts to activate node v
                 weight = P[(v, T_node[v])]
-                # 激活成功
                 if random() <= weight:
                     Active.add_edge(T[i], v)
                     T.append(v)
@@ -79,12 +73,9 @@ def runDC_DILinUCB(G, P, S):
             except:
                 E[u][idx] = 0
 
-    # T 最后被激活的节点
-    # len(T) 最后被激活的节点个数
     return reward, E, T
 
 
-# 返回对应的图和相应 seed set 的 reward
 def runDC_getReward(graph, real_P, seed_set, iterations):
     rewards = []
     for j in range(iterations):

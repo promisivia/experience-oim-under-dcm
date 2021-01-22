@@ -26,8 +26,6 @@ class edge_base:
         self.mean = np.zeros(self.n)
         self.pta_max = 1
 
-    # 对应算法的第6行， alpha是rio
-    # 返回 U_t(e)
     def getU(self, MInv, p_hat):
         mean = np.dot(np.transpose(self.featureVector), p_hat)
         var = np.sqrt(np.dot(np.dot(np.transpose(self.featureVector), MInv), self.featureVector))
@@ -66,9 +64,7 @@ class DCLinUCBAlgorithm:
 
         return S
 
-    # 对应14行
     def simulate(self, S):
-        # 需要写runDC方法
         reward, live_edges, live_nodes = runDC(self.G, self.real_P, S)
         # observed_probabilities : (node n, index i): reward
         # print("----------------simulation rewards :", reward)
@@ -79,21 +75,15 @@ class DCLinUCBAlgorithm:
         # print("----------------rewards under real situation:", reward)
         return live_edges, reward
 
-    # 对应17-22，加上4-13行
     def update(self, live_edges):
-
-        # 17-22
-        # 更新观察到的每个edge_base
         for key, reward in zip(live_edges.keys(), live_edges.values()):
             node = key[0]
             index = key[1]
             self.STRUCT.updateParameters(self.edge_bases[(node, index)].featureVector, reward)
 
-        # 4行
         self.p_hat = np.dot(self.STRUCT.getMInv(), self.STRUCT.b)
         # print("---------------current p_hat ", self.p_hat)
 
-        # 5-13行
         for n in self.G.nodes():
             if self.indegree[n] > 0:
                 self.currentP[(n, 0)] = self.edge_bases[(n, 0)].getU(self.STRUCT.getMInv(), self.p_hat)

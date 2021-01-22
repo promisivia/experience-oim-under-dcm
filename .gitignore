@@ -5,6 +5,7 @@
 DataProcess/raw/
 DataProcess/processed/
 SimulationResults/
+datasets/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

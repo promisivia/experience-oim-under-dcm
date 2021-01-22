@@ -4,8 +4,8 @@ import pickle
 import networkx as nx
 
 INTERVAL = 90
-TOTAL_DAY = 1052  # 1052@Flixster 1955@LastFM
-file_address = "datasets/Flixster/"
+TOTAL_DAY = 1955  # 1052@Flixster 1955@LastFM
+file_address = "datasets/LastFM/"
 user_time_set = pickle.load(open(file_address + "userTimeSet.dic", 'rb'))
 user_time_to_movie = pickle.load(open(file_address + "userAndTimeToMovie.dic", 'rb'))
 user_first_day = {}

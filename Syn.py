@@ -5,14 +5,14 @@ from RunTools.MainForDCUCB import MainForDCUCB
 
 seed_size = 2
 iterations = 10000
-dataset_list = ['Small1', 'Small2']
-scale_list = ['0.2', '0.5', '0.8', '0.3-0.7', '0.1-0.5', '0.5-0.9']
+dataset_list = ['Small']
+scale_list = ['0.1-0.5', '0.3-0.7', '0.5-0.9']
 
 if __name__ == '__main__':
     for i in range(10):
         for dataset in dataset_list:
             for scale in scale_list:
-                save_address = 'SimulationResults/Ex1/' + dataset + '_' + scale + '/'
+                save_address = 'SimulationResults/Ex1/' + dataset + '/' + scale + '/'
 
                 G = pickle.load(open('datasets/' + dataset + '/graph.G', 'rb'), encoding='latin1')
                 indegree = pickle.load(open('datasets/' + dataset + '/indegree.dic', 'rb'), encoding='latin1')
