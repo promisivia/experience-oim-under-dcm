@@ -49,7 +49,7 @@ class DC_UCB_alg:
                 continue
 
     def select_seed(self):
-        S = self.oracle(self.G, self.currentP, self.seed_size, 50)
+        S = self.oracle(self.G, self.currentP, self.seed_size, 30)
         # print("---------------the selected seed set is :", S)
 
         return S
@@ -66,7 +66,6 @@ class DC_UCB_alg:
 
     def update(self, observed_probabilities):
         # print("update observations", observed_probabilities)
-        # 更新观察到的每个edge_base
         for key, val in zip(observed_probabilities.keys(), observed_probabilities.values()):
             node = key[0]
             index = key[1]

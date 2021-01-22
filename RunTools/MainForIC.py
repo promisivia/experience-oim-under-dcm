@@ -4,11 +4,12 @@ import numpy as np
 from Model.Real import runReal_IC, runReal_DILinUCB
 from Model.IC import runIC, runIC_DILinUCB
 from Tool.utilFunc import *
-from Oracle.Greedy_IC import generalGreedy
+from Oracle.Greedy_IC import Greedy
 from BanditAlg.CUCB import UCB1Algorithm as CUCB_Algorithm
 from BanditAlg.UCB import UCBAlgorithm
 from BanditAlg.DILinUCB import DILinUCBAlgorithm as DILinUCB_Algorithm
 from BanditAlg.IMFB import IMFBAlgorithm
+from BanditAlg.IMLinUCB import IMLinUCBAlgorithm
 
 
 class SimulateOnlineData:
@@ -97,15 +98,17 @@ def MainForIC(G, indegree, probability, parameter, feature_dic, iterations, seed
     x = 1
     while x <= times:
         algorithms = {}
-        experiments = SimulateOnlineData(G, probability, generalGreedy, seed_size, iterations, dataset, save_address,
+        experiments = SimulateOnlineData(G, probability, Greedy, seed_size, iterations, dataset, save_address,
                                          algorithm)
         if algorithm == 'UCB':
             algorithms[algorithm] = UCBAlgorithm(G, probability, seed_size)
         elif algorithm == 'CUCB':
-            algorithms[algorithm] = CUCB_Algorithm(G, probability, seed_size, generalGreedy)
+            algorithms[algorithm] = CUCB_Algorithm(G, probability, seed_size, Greedy)
         elif algorithm[:2] == 'DI':
-            algorithms[algorithm] = DILinUCB_Algorithm(G, parameter, seed_size, generalGreedy, 0.1)
+            algorithms[algorithm] = DILinUCB_Algorithm(G, parameter, seed_size, Greedy, 0.1)
         elif algorithm == 'IMFB':
-            algorithms[algorithm] = IMFBAlgorithm(G, probability, parameter, seed_size, generalGreedy)
+            algorithms[algorithm] = IMFBAlgorithm(G, probability, parameter, seed_size, 5, Greedy)
+        elif algorithm == 'IMLinUCB':
+            algorithms[algorithm] = IMLinUCBAlgorithm(G, probability, parameter, seed_size, len(G.edges()), Greedy, 0.1, 0.4, feature_dic, 1)
         experiments.runAlgorithms(algorithms, real_mode)
         x += 1

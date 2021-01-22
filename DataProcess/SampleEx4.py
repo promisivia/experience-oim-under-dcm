@@ -5,11 +5,11 @@ import matplotlib.pyplot as plt
 # const data
 graph_address = './raw/link.txt'
 action_log_address = "./processed/action_logs.txt"
-save_dir = '../datasets/Flixster/'
+save_dir = '../datasets/Flixster-v4/'
 
 ID_COUNT = 20
 INTERVAL = 365
-TOTAL_DAY = 1000
+TOTAL_DAY = 1052  # 1052@Flixster 1955@LastFM
 
 
 def movieToSetId(movie):
@@ -58,9 +58,10 @@ for line in fin_rating:
 fin_rating.close()
 print("Finish finding the movie set and user to time")
 
-
 # find graph with edge active
+# degree = pickle.load(open('./processed/degree.dic', 'rb'))
 G = nx.Graph()
+degree = {}
 with open(graph_address) as f:
     for line in f:
         data = line.split()
@@ -73,40 +74,63 @@ with open(graph_address) as f:
         except:
             continue
 
-        for movie_id in u_set & v_set:
+        try:
+            degree[u] += 1
+        except:
+            degree[u] = 1
+        try:
+            degree[v] += 1
+        except:
+            degree[v] = 1
+
+        set = u_set & v_set
+        for movie_id in set:
             u_time_set = user_movie_time[(u, movie_id)]
             v_time_set = user_movie_time[(v, movie_id)]
 
-            if have_activation(u_time_set, v_time_set) > 5:
+            if have_activation(u_time_set, v_time_set) > 20:
                 G.add_edge(u, v)
+                continue
 
 f.close()
 print("G size : ", len(G.nodes()), len(G.edges()))
 
+newG = nx.Graph()
+for (u, v) in G.edges():
+    if degree[u] > 20 and degree[v] > 20:
+        newG.add_edge(u, v)
+print("newG size : ", len(newG.nodes()), len(newG.edges()))
+
 
 # find max component
-component = max(nx.connected_components(G), key=len)
-Gc = G.subgraph(component).copy()
+component = max(nx.connected_components(newG), key=len)
+Gc = newG.subgraph(component).copy()
+print("max component size : ", len(Gc.nodes()), len(Gc.edges()))
+
 nodes = Gc.nodes()
 
-G = nx.DiGraph()
+finalG = nx.DiGraph()
 with open(graph_address) as f:
     for line in f:
         data = line.split()
         u = int(data[0])
         v = int(data[1])
         if u in nodes and v in nodes:
-            G.add_edge(u, v)
-            G.add_edge(v, u)
+            finalG.add_edge(u, v)
+            finalG.add_edge(v, u)
+
 f.close()
 
 print("Finish finding the max component")
-print("max component size : ", len(G.nodes()), len(G.edges()))
-nx.draw(G)
+print("final size : ", len(finalG.nodes()), len(finalG.edges()))
+nx.draw(finalG)
 plt.show()
-pickle.dump(G, open(save_dir + 'graph.G', "wb"))
+pickle.dump(finalG, open(save_dir + 'graph.G', "wb"))
 
 #######################################
-# @output:
-# max component size :  359 986
+# G size :  4194 3605
+# newG size :  404 370
+# max component size :  204 210
+# Finish finding the max component
+# final size :  204 938
 ########################################

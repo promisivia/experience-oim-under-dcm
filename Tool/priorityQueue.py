@@ -1,14 +1,13 @@
-__author__ = 'http://docs.python.org/2/library/heapq.html#priority-queue-implementation-notes'
-
 import itertools
 from heapq import *
 
+
 class PriorityQueue(object):
     def __init__(self):
-        self.pq = []                         # list of entries arranged in a heap
-        self.entry_finder = {}               # mapping of tasks to entries
-        self.REMOVED = '<removed-task>'      # placeholder for a removed task
-        self.counter = itertools.count()     # unique sequence count
+        self.pq = []  # list of entries arranged in a heap
+        self.entry_finder = {}  # mapping of tasks to entries
+        self.REMOVED = '<removed-task>'  # placeholder for a removed task
+        self.counter = itertools.count()  # unique sequence count
 
     def add_task(self, task, priority=0):
         'Add a new task or update the priority of an existing task'

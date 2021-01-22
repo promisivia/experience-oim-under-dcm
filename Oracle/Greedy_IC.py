@@ -1,14 +1,9 @@
-"""
-Implements greedy heuristic for Model model [1]
-[1] -- Wei Chen et al. Efficient Influence Maximization in Social Networks (Algorithm 1)
-"""
-
 from Tool.priorityQueue import PriorityQueue as PQ
 from Model.IC import runIC
 
 
-def generalGreedy(G, k, p):
-    """ Finds initial seed set S using general greedy heuristic
+def Greedy(G, k, p):
+    """
     Input: G -- networkx Graph object
     k -- number of initial nodes needed
     p -- propagation probability

@@ -1,9 +1,7 @@
-import matplotlib.pyplot as plt
 import pickle
 
-save_dir = '../datasets/Flixster/'
+save_dir = '../datasets/NetHEPT/'
 
-dimension = 5
 nodeDic = {}
 edgeDic = {}
 degree = []
@@ -12,9 +10,6 @@ n = len(G.nodes())
 for index, u in enumerate(G.nodes()):
     fv = [0 for i in range(n)]
     fv[index] = 1
-    nodeDic[u] = [fv, fv]  # TODO
+    nodeDic[u] = [fv, fv]
 
 pickle.dump(nodeDic, open(save_dir + 'nodeFeatures.dic', "wb"))
-
-plt.hist(degree)
-plt.show()

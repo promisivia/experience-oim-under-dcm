@@ -48,7 +48,7 @@ class SimulateOnlineData:
                     else:
                         reward, live_edges, live_nodes = runDC(self.G, self.Prob, S)
                 algorithm.updateParameters(S, live_nodes, live_edges, iter_)
-                # print("rewards: " + str(reward))
+                print("rewards: " + str(reward))
 
                 self.AlgReward[alg_name].append(reward)
                 # self.averageReward[alg_name].append("%.2f" % np.mean(self.AlgReward[alg_name][0:iter_ + 1]))

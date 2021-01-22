@@ -3,9 +3,9 @@ from random import choice
 import pickle
 import networkx as nx
 
-TOTAL_DAY = 1000
 INTERVAL = 90
-file_address = "DataProcess/processed/"
+TOTAL_DAY = 1955  # 1052@Flixster 1955@LastFM
+file_address = "datasets/LastFM/"
 user_time_set = pickle.load(open(file_address + "userTimeSet.dic", 'rb'))
 user_time_to_movie = pickle.load(open(file_address + "userAndTimeToMovie.dic", 'rb'))
 user_first_day = {}
@@ -51,6 +51,7 @@ def runReal_IC(G, S):
                             E[(user, nei)] = 1
                             T.append(nei)
                             user_first_day[nei] = day
+                            break
                         else:
                             E[(user, nei)] = 0
             else:  # for ic full, should also influence but there is not effect
@@ -131,15 +132,17 @@ def runReal_DC(G, S):
             if nei not in T:
                 # see what v influence in 100 days from the day it is added to the set
                 for day in range(first_day, first_day + INTERVAL + 1):
-                    day = day % INTERVAL
+                    day = day % TOTAL_DAY
                     nei_movie_id = get_movie_id(nei, day)
                     if nei_movie_id is not None:
                         if nei_movie_id == user_movie_id:
                             E[(nei, T_node[nei])] = 1
                             T.append(nei)
                             user_first_day[nei] = day
+                            break
                         else:
                             E[(nei, T_node[nei])] = 0
+                T_node[nei] += 1
         i += 1
 
     reward = len(T)
